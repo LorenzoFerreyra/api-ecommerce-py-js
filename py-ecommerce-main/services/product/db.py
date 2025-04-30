@@ -1,0 +1,18 @@
+from sqlmodel import SQLModel, Session, create_engine
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+DATABASE_URL = os.getenv("DB_URL")
+
+engine = create_engine("mysql+mysqlconnector:" + DATABASE_URL, echo=True)
+SQLModel.metadata.schema = os.getenv("DB_NAME")
+
+
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+
+
+def get_session():
+    with Session(engine) as session:
+        yield session
